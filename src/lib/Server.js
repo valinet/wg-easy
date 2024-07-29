@@ -137,7 +137,7 @@ module.exports = class Server {
         return { success: true };
       }))
       .get('/api/wireguard/client', defineEventHandler(async (event) => {
-        return WireGuard.getClients(getRequestHeaders(event)["remote-user"]);
+        return WireGuard.getClients(getRequestHeaders(event)['remote-user']);
       }))
       .get('/api/wireguard/client/:clientId/qrcode.svg', defineEventHandler(async (event) => {
         const clientId = getRouterParam(event, 'clientId');
@@ -160,7 +160,9 @@ module.exports = class Server {
       }))
       .post('/api/wireguard/client', defineEventHandler(async (event) => {
         let { name } = await readBody(event);
-        name = getRequestHeaders(event)["remote-user"] + "_" + name;
+        if (getRequestHeaders(event)['remote-user'] != null) {
+          name = `${getRequestHeaders(event)['remote-user']}_${name}`;
+        }
         await WireGuard.createClient({ name });
         return { success: true };
       }))
@@ -191,7 +193,9 @@ module.exports = class Server {
           throw createError({ status: 403 });
         }
         let { name } = await readBody(event);
-        name = getRequestHeaders(event)["remote-user"] + "_" + name;
+        if (getRequestHeaders(event)['remote-user'] != null) {
+          name = `${getRequestHeaders(event)['remote-user']}_${name}`;
+        }
         await WireGuard.updateClientName({ clientId, name });
         return { success: true };
       }))
