@@ -129,11 +129,11 @@ ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
     debug('Config synced.');
   }
 
-  async getClients() {
+  async getClients(remote_user) {
     const config = await this.getConfig();
-    const clients = Object.entries(config.clients).map(([clientId, client]) => ({
+    const clients = Object.entries(config.clients).filter(([clientId, client]) => client.name.startsWith(remote_user + "_")).map(([clientId, client]) => ({
       id: clientId,
-      name: client.name,
+      name: client.name.substring((remote_user + "_").length, client.name.length),
       enabled: client.enabled,
       address: client.address,
       publicKey: client.publicKey,

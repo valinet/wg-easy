@@ -15,6 +15,7 @@ const {
   defineEventHandler,
   fromNodeMiddleware,
   getRouterParam,
+  getRequestHeaders,
   toNodeListener,
   readBody,
   setHeader,
@@ -135,8 +136,8 @@ module.exports = class Server {
         debug(`Deleted Session: ${sessionId}`);
         return { success: true };
       }))
-      .get('/api/wireguard/client', defineEventHandler(() => {
-        return WireGuard.getClients();
+      .get('/api/wireguard/client', defineEventHandler(async (event) => {
+        return WireGuard.getClients(getRequestHeaders(event)["remote-user"]);
       }))
       .get('/api/wireguard/client/:clientId/qrcode.svg', defineEventHandler(async (event) => {
         const clientId = getRouterParam(event, 'clientId');
@@ -158,7 +159,8 @@ module.exports = class Server {
         return config;
       }))
       .post('/api/wireguard/client', defineEventHandler(async (event) => {
-        const { name } = await readBody(event);
+        let { name } = await readBody(event);
+        name = getRequestHeaders(event)["remote-user"] + "_" + name;
         await WireGuard.createClient({ name });
         return { success: true };
       }))
@@ -188,7 +190,8 @@ module.exports = class Server {
         if (clientId === '__proto__' || clientId === 'constructor' || clientId === 'prototype') {
           throw createError({ status: 403 });
         }
-        const { name } = await readBody(event);
+        let { name } = await readBody(event);
+        name = getRequestHeaders(event)["remote-user"] + "_" + name;
         await WireGuard.updateClientName({ clientId, name });
         return { success: true };
       }))

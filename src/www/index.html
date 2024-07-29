@@ -101,6 +101,17 @@
                 <span class="text-sm">{{$t("new")}}</span>
               </button>
             </div>
+            <div class="flex-shrink-0">
+              <button @click="location.replace('https://auth-' + location.origin.replace('https://', '') + '/logout?rd=' + location.origin + '/');"
+                class="hover:bg-red-800 hover:border-red-800 hover:text-white text-gray-700 border-2 border-gray-100 py-2 px-4 rounded inline-flex items-center transition">
+                <svg style="transform-box: fill-box; transform-origin: center; transform: rotate(45deg);" class="w-4 mr-2" inline xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span class="text-sm">Log out</span>
+              </button>
+            </div>
           </div>
 
           <div>
